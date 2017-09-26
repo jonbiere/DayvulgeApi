@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://jonbiere@bitbucket.org/dayvulge/dayvulgeserverpostgres.git"
   },
-  "author": "Jon Biere",
+  "author": "Jon Biere and Jake Regan",
   "license": "ISC",
   "homepage": "https://bitbucket.org/dayvulge/dayvulgeserverpostgres#readme",
   "dependencies": {
