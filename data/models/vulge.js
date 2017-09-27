@@ -1,32 +1,18 @@
-const Sequelize = require('sequelize')
-const db = require('../db')
-
-const Vulge = db.define('vulge', {
-  content: {
-    type: Sequelize.TEXT,
-    allowNull: false
-  },
-  upVotes: {
-    type: Sequelize.INTEGER
-  },
-  downVotes: {
-    type: Sequelize.INTEGER
-  },
-  collectionId:{
-    type: Sequelize.INTEGER
+//Node Properties
+//userId, content, createdAt, upVotes, downVotes
+class Vulge {
+  constructor(node) {
+    Object.assign(this, node.properties);
+    if (this.userId) {
+      this.userId = this.userId.toNumber();
+    }
+    if(this.upVotes){
+      this.upVotes = this.upVotes.toNumber();
+    }
+    if(this.downVotes){
+      this.downVotes = this.downVotes.toNumber();
+    }
   }
-});
+}
 
 module.exports = Vulge
-
-/*
- * instanceMethods
- */
-
-/*
- * classMethods
- */
-
-/**
- * hooks
- */

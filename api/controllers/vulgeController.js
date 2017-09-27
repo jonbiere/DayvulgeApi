@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const vulgeRepo = require('../../data/repositories/vulgeRepository')
 
 // api/vulge/:id
 router.get('/:id', (req, res) => {
@@ -13,66 +14,12 @@ router.get('/:id', (req, res) => {
     });
 });
 
-router.get('/collection/:groupId', (req, res) =>{
-    res.json(fakeVulges);
+router.get('/collection/:collectionId', (req, res) =>{
+    let collectionId = req.params['collectionId'];
+    
+    vulgeRepo.getVulgeCollection(collectionId).then(results =>{
+        res.json(results);
+    });
 });
 
-
-const fakeVulges = [
-    {
-        id:1,
-        content: "Jake the Fake. I mean snake.",
-        upVotes: 10,
-        downVotes:3,
-        createAt: Date.now(),
-        updatedAt: Date.now(),
-        userId: 1
-    },
-    {
-        id:2,
-        content: "Hey there!",
-        upVotes: 11,
-        downVotes:3,
-        createAt: Date.now(),
-        updatedAt: Date.now(),
-        userId: 1
-    },
-    {
-        id:3,
-        content: "Hurricane Irma",
-        upVotes: 1,
-        downVotes:3,
-        createAt: Date.now(),
-        updatedAt: Date.now(),
-        userId: 1
-    },
-    {
-        id:4,
-        content: "What is more orange? A carrot or the POTUS.",
-        upVotes: 13,
-        downVotes:30,
-        createAt: Date.now(),
-        updatedAt: Date.now(),
-        userId: 1
-    },
-    {
-        id:5,
-        content: "Blah blah blah blah blah blah.",
-        upVotes: 10,
-        downVotes:3,
-        createAt: Date.now(),
-        updatedAt: Date.now(),
-        userId: 1
-    },
-    {
-        id:6,
-        content: "Hello.",
-        upVotes: 3,
-        downVotes:9,
-        createAt: Date.now(),
-        updatedAt: Date.now(),
-        userId: 1
-    }
-
-];
 module.exports = router;

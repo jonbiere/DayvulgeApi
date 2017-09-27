@@ -1,6 +1,4 @@
 const User = require('./user');
-const Vulge = require('./vulge');
-const Vote = require('./vote');
 const Profile = require('./profile');
 
 /**
@@ -10,11 +8,11 @@ const Profile = require('./profile');
  *    BlogPost.belongsTo(User)
  */
 
- User.hasMany(Vulge);
- User.hasOne(Profile);
+//  User.hasMany(Vulge);
+//  User.hasOne(Profile);
  
- User.hasMany(Vote);
- Vulge.hasMany(Vote);
+//  User.hasMany(Vote);
+//  Vulge.hasMany(Vote);
  
 /**
  * We'll export all of our models here, so that any time a module needs a model,
@@ -25,7 +23,5 @@ const Profile = require('./profile');
 
 module.exports = {
   User,
-  Vulge,
-  Vote,
   Profile
 }

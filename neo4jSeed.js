@@ -1,29 +1,26 @@
-const neo4j = require('neo4j-driver').v1;
-const dbUri = 'bolt://localhost:7687';
-const user = 'neo4j';
-const password = '875688n64';
-const driver = neo4j.driver(dbUri, neo4j.auth.basic(user, password));
-const session = driver.session();
-var Chance = require('chance');
+const graphDb = require('./data/graphDb')
+const Chance = require('chance');
 
 /* Clear all Nodes
 
 MATCH (n)
 OPTIONAL MATCH (n)-[r]-()
 DELETE n,r
+
+//Example Relationship Syntax
+//CREATE (Keanu)-[:ACTED_IN {roles:['Neo']}]->(TheMatrix)
 */
 
 
 const seed = () => {
-  console.log("Start Seeding.....");
-
   var chance = new Chance();
 
-  var cypherCode = "";
+  var cypherCode = "CREATE (group1:VulgeCollection {collectionId:1})";
+  cypherCode += "CREATE (group2:VulgeCollection {collectionId:2})";
   for (var i = 1; i <= 100; i++) {
-    var randomContent = chance.paragraph();
-    cypherCode += `CREATE (a${i}:Vulge {content:"${randomContent}"})`;
-
+    var randomContent = chance.sentence({words: chance.integer({min:5, max:10})});
+    cypherCode += `CREATE (a${i}:Vulge {content:"${randomContent}", createdAt:"${chance.date({string:true, year: 2017})}", upVotes:${chance.integer({min: 0, max: 200})}, downVotes:${chance.integer({min: 0, max: 200})}})`;
+    cypherCode += `CREATE (group${chance.integer({min:1, max:2})})-[:CONTAINS]->(a${i})`;
     if (i % 5 == 0) {
       var randomName = chance.name();
       cypherCode += `CREATE(u${i}:User {name:"${randomName}"})`;
@@ -31,24 +28,19 @@ const seed = () => {
       for (var j = 0; j < 5; j++) {
         cypherCode += `CREATE(u${i})-[:AUTHOR_OF]->(a${i - j})`;
       }
-    }
-
-
-    //CREATE (Keanu)-[:ACTED_IN {roles:['Neo']}]->(TheMatrix)
+    }  
 
   }
-
+  const session = graphDb.session();
   const resultPromise = session.run(cypherCode).then(result => {
     session.close();
-    console.log("Database Seeded.");
+    console.log("Graph Database Seeded");
     return null;
   });
 
-
+  return resultPromise;
 }
 
-process.on('exit', function () {
-  driver.close();
-});
+
 
 module.exports = seed;

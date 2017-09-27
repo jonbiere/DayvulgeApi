@@ -12,7 +12,7 @@ const cors = require('cors');
 const db = require('./data/index.js');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const sessionStore = new SequelizeStore({db});
-const graphSeed = require('./neo4jSeed.js');
+const seedGraph = require('./neo4jSeed.js');
 
 // function to wrap middleware:
 const createApp = () => {
@@ -87,9 +87,9 @@ const syncDb = () => db.sync(toSyncOrNot)
 if (require.main === module) {
   sessionStore.sync()
     .then(syncDb)
-    .then(createApp)
-    .then(graphSeed)
-    .then(startListening)
+    .then(createApp);
+
+    seedGraph().then(startListening);
 } else {
   createApp()
 }
