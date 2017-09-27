@@ -19,33 +19,32 @@ const seed = () => {
 
   var chance = new Chance();
 
-  // Use Chance here.
- var cypherCode = "";
+  var cypherCode = "";
   for (var i = 1; i <= 100; i++) {
     var randomContent = chance.paragraph();
     cypherCode += `CREATE (a${i}:Vulge {content:"${randomContent}"})`;
 
-    if(i % 5 == 0){
+    if (i % 5 == 0) {
       var randomName = chance.name();
       cypherCode += `CREATE(u${i}:User {name:"${randomName}"})`;
 
-      for(var j = 0; j < 5; j++){
-        cypherCode += `CREATE(u${i})-[:AUTHOR_OF]->(a${i-j})`;
-      }    
+      for (var j = 0; j < 5; j++) {
+        cypherCode += `CREATE(u${i})-[:AUTHOR_OF]->(a${i - j})`;
+      }
     }
 
 
     //CREATE (Keanu)-[:ACTED_IN {roles:['Neo']}]->(TheMatrix)
-    
+
   }
 
   const resultPromise = session.run(cypherCode).then(result => {
-      session.close();
-      console.log("Database Seeded.");
-      return null;
-    });
-  
-  
+    session.close();
+    console.log("Database Seeded.");
+    return null;
+  });
+
+
 }
 
 process.on('exit', function () {
