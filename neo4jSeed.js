@@ -18,7 +18,7 @@ const seed = () => {
   var cypherCode = "CREATE (group1:VulgeCollection {collectionId:1})";
   cypherCode += "CREATE (group2:VulgeCollection {collectionId:2})";
   for (var i = 1; i <= 100; i++) {
-    var randomContent = chance.sentence({words: chance.integer({min:5, max:10})});
+    var randomContent = chance.sentence({words: chance.integer({min:5, max:20})});
     cypherCode += `CREATE (a${i}:Vulge {content:"${randomContent}", createdAt:"${chance.date({string:true, year: 2017})}", upVotes:${chance.integer({min: 0, max: 200})}, downVotes:${chance.integer({min: 0, max: 200})}})`;
     cypherCode += `CREATE (group${chance.integer({min:1, max:2})})-[:CONTAINS]->(a${i})`;
     if (i % 5 == 0) {
