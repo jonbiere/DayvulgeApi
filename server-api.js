@@ -87,9 +87,9 @@ const syncDb = () => db.sync(toSyncOrNot)
 if (require.main === module) {
   sessionStore.sync()
     .then(syncDb)
-    .then(createApp);
-
-    seedGraph().then(startListening);
+    .then(createApp)
+    .then(startListening);
+    //seedGraph().then(startListening);
 } else {
   createApp()
 }
