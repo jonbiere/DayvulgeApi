@@ -19,6 +19,7 @@ const createApp = () => {
 
   let originsWhiteList = [
     'http://localhost:3000',
+    'https://dev-dayvulge-react.herokuapp.com'
     //'https://dev.dayvulge.com'
   ];
   let corsOptions = {
