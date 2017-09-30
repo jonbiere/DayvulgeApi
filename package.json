@@ -4,10 +4,9 @@
   "description": "Server for Dayvuge application",
   "main": "index.js",
   "scripts": {
-    "start": "npm-run-all --parallel --continue-on-error serveApi serveCron serveAmqp",
+    "start": "npm-run-all --parallel --continue-on-error serveApi serveWorker",
     "serveApi": "nodemon server-api.js",
-    "serveCron": "nodemon server-cron.js",
-    "serveAmqp": "nodemon server-amqp-consumer.js",
+    "serveWorker": "nodemon server-worker.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "node neo4jSeed.js",
     "lint": "eslint ./**/*.js"
@@ -20,6 +19,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/dayvulge/dayvulgeserverpostgres#readme",
   "dependencies": {
+    "amqp": "^0.2.6",
     "axios": "^0.16.2",
     "body-parser": "^1.18.0",
     "chance": "^1.0.11",
