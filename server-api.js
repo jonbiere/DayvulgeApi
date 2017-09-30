@@ -30,7 +30,8 @@ const createApp = () => {
   };
 
   //Allow all orgins for now.
-  app.use(cors(corsOptions));
+  //Disable Cors due to reverse proxy
+  //app.use(cors(corsOptions));
   
   // for server logs to help debugging
   app.use(morgan('dev'));
