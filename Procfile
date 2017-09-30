@@ -1,1 +1,3 @@
-web: node server.js
+web: node server-api.js
+worker: node server-cron.js
+worker: node server-amqp-consumer.js

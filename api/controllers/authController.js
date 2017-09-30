@@ -4,12 +4,12 @@ const passport = require('passport');
 
 // passport registration
 passport.serializeUser((user, done) =>{
-  done(null, user.id)
+  done(null, user.id);
 });
 passport.deserializeUser((id, done) =>{
   User.findById(id)
   .then((user) => {
-    done(null, user)
+    done(null, user);
   }).catch(ex =>{
     done(ex);
   })
@@ -23,20 +23,20 @@ router.post('/login', (req, res, next) => {
   User.findOne({where: {email: req.body.email}})
     .then(user => {
       if (!user) {
-        res.status(401).send('User not found')
+        res.status(401).send('User not found');
       } else if (!user.correctPassword(req.body.password)) {
-        res.status(401).send('Incorrect password')
+        res.status(401).send('Incorrect password');
       } else {
-        req.login(user, err => err ? next(err) : res.json(user))
+        req.login(user, err => err ? next(err) : res.json(user));
       }
     })
-    .catch(next)
+    .catch(next);
 });
 
 router.post('/signup', (req, res, next) => {
   User.create(req.body)
     .then(user => {
-      req.login(user, err => err ? next(err) : res.json(user))
+      req.login(user, err => err ? next(err) : res.json(user));
     })
     .catch(err => {
       if (err.name === 'SequelizeUniqueConstraintError')

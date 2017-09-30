@@ -1,0 +1,1 @@
+console.log('Starting AMQP Consumers...')

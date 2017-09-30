@@ -1,4 +1,4 @@
-const graphDb = require('./data/graphDb')
+const graphDb = require('./graphDb')
 const Chance = require('chance');
 
 /* Clear all Nodes
@@ -41,6 +41,8 @@ const seed = () => {
   return resultPromise;
 }
 
-
+if (require.main === module){
+  seed();
+}
 
 module.exports = seed;
