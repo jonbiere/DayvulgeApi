@@ -14,10 +14,13 @@ DELETE n,r
 
 const seed = () => {
   var chance = new Chance();
-  //first delete all existing data;
+  //first delete all existing data
   var cypherCode = "MATCH (n) OPTIONAL MATCH (n)-[r]-() DELETE n,r";
-  var cypherCode = "CREATE (group1:VulgeCollection {collectionId:1})";
+
+  //then build new data
+  cypherCode = "CREATE (group1:VulgeCollection {collectionId:1})";
   cypherCode += "CREATE (group2:VulgeCollection {collectionId:2})";
+  
   for (var i = 1; i <= 100; i++) {
     var randomContent = chance.sentence({words: chance.integer({min:5, max:20})});
     cypherCode += `CREATE (a${i}:Vulge {content:"${randomContent}", createdAt:"${chance.date({string:true, year: 2017})}", upVotes:${chance.integer({min: 0, max: 200})}, downVotes:${chance.integer({min: 0, max: 200})}})`;
