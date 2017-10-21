@@ -1,5 +1,4 @@
 const User = require('./user');
-const Profile = require('./profile');
 
 /**
  * If we had any associations to make, this would be a great place to put them!
@@ -22,6 +21,5 @@ const Profile = require('./profile');
  */
 
 module.exports = {
-  User,
-  Profile
+  User
 }

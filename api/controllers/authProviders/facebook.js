@@ -1,6 +1,6 @@
 const passport = require('passport');
 const router = require('express').Router();
-const {User} = require('../../../data/models');
+const {User} = require('../../../data/models/postgres');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const providerName = 'facebook'
 

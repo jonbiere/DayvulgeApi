@@ -9,10 +9,12 @@ const socketio = require('socket.io');
 const passport = require('passport');
 const path = require('path');
 const cors = require('cors');
-const db = require('./data/index.js');
+
+//database
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const sessionStore = new SequelizeStore({db});
-const seedGraph = require('./data/neo4jSeed.js');
+const sqlDb = require('./data/sqlDb');
+const sessionStore = new SequelizeStore({db:sqlDb});
+const seedGraph = require('./data/graphSeed.js');
 
 // function to wrap middleware:
 const createApp = () => {
@@ -79,16 +81,15 @@ const startListening = () => {
 
 const toSyncOrNot = process.env.NODE_ENV !== 'production' ? {force: true} : '';
 
-const syncDb = () => db.sync(toSyncOrNot)
+const syncDb = () => sqlDb.sync(toSyncOrNot)
 
 
 // require.main evaluates true when run from command line ('node server/index.js')
 // require.main evaluates false when it is required by another module
 if (require.main === module) {
   sessionStore.sync()
-    .then(syncDb)
-    .then(createApp);
-    
+  .then(syncDb)
+  .then(createApp);
   seedGraph().then(startListening);
 } else {
   createApp()

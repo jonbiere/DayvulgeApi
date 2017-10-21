@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const User = require('../../data/models/user');
+const {User} = require('../../data/models/postgres');
 const passport = require('passport');
 
 // passport registration
@@ -20,12 +20,13 @@ router.use('/google', require('./authProviders/google'));
 router.use('/facebook', require('./authProviders/facebook'));
 
 router.post('/login', (req, res, next) => {
-  User.findOne({where: {email: req.body.email}})
+  let {email, password} = req.body;
+  User.findOne({where: {email: email}})
     .then(user => {
       if (!user) {
-        res.status(401).send('User not found');
-      } else if (!user.correctPassword(req.body.password)) {
-        res.status(401).send('Incorrect password');
+        res.status(401).send('User or password is not correct');
+      } else if (!user.correctPassword(password)) {
+        res.status(401).send('User or password is not correct');
       } else {
         req.login(user, err => err ? next(err) : res.json(user));
       }
@@ -45,21 +46,19 @@ router.post('/signup', (req, res, next) => {
     })
 });
 
-router.post('/logout', (req, res) => {
+router.get('/logout', (req, res) => {
   req.logout();
   req.session.destroy(function (err) {
-      if (!err) {
-          res.clearCookie('connect.sid').status(200).json({status: "Success"});
-      } else {
-          // handle error case...
+      if (err) {
+          return next(err);
       }
 
+      res.clearCookie('connect.sid').status(200).json({status: "ok"});
   });
+  
 });
 
 router.get('/me', (req, res) => {
-  console.log('Me');
-  console.log(req.user);
   res.json(req.user)
 });
 

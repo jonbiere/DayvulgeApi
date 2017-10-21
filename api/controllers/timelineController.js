@@ -11,8 +11,7 @@ router.get('/:timelineId', (req, res) =>{
 });
 
 router.get('/traverse/:timelineId/:nodeLimit', (req, res)=>{
-    let timelineId = req.params['timelineId'];
-    let nodeLimit = req.params['nodeLimit'];
+    let {timelineId, nodeLimit} = req.params;
     
     //ensure its not more than 50 for now
     nodeLimit = nodeLimit >= 50 ? 50 : nodeLimit;

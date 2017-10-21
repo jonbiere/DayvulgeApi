@@ -1,7 +1,7 @@
 const passport = require('passport');
 const router = require('express').Router();
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const {User} = require('../../../data/models');
+const {User} = require('../../../data/models/postgres');
 module.exports = router;
 
 /**

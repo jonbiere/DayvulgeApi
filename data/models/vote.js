@@ -1,12 +1,10 @@
-const Sequelize = require('sequelize');
-const db = require('../db');
-
-const Vote = db.define('vote', {
-  isUp:{
-      type: Sequelize.BOOLEAN,
-      allowNull: false
-  }
-});
+// const Sequelize = require('sequelize');
+// const Vote = db.define('vote', {
+//   isUp:{
+//       type: Sequelize.BOOLEAN,
+//       allowNull: false
+//   }
+// });
 
 
-module.exports = Vote;
+// module.exports = Vote;
