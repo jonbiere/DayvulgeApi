@@ -36,7 +36,7 @@ router.post('/vote', authCheck, (req, res) => {
         res.status(200).json({status:"ok"});
     }
     else{
-        res.status(400).json({error: result.error});
+        res.status(400).json({message: result.error});
     }
 
   });

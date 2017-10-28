@@ -4,19 +4,12 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const session = require('express-session');
 const socketio = require('socket.io');
-const passport = require('passport');
 const path = require('path');
 const cors = require('cors');
-
-//database
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const sqlDb = require('./data/sqlDb');
-const sessionStore = new SequelizeStore({db:sqlDb});
 const seedGraph = require('./data/graphSeed.js');
 
-// function to wrap middleware:
 const createApp = () => {
 
   let originsWhiteList = [
@@ -30,8 +23,8 @@ const createApp = () => {
     },
     credentials: true
   };
-
   app.use(cors(corsOptions));
+  //app.options('*', cors()) 
   
   // for server logs to help debugging
   app.use(morgan('dev'));
@@ -39,23 +32,6 @@ const createApp = () => {
   // requests contain a body. If you want to use it in req.body, you will need some body parsing middleware
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({extended: true}))
-
-  
-
-  // session middleware with passport
-  // https://www.npmjs.com/package/express-session for configuration details
-  app.use(session({
-    secret: process.env.SESSION_SECRET || 'KeepItSecret KeepItSafe',
-    store: sessionStore,
-    resave: false,
-    saveUninitialized: false,
-    cookie:{
-      maxAge: 1000*60*30
-    }
-  }));
-
-  app.use(passport.initialize())
-  app.use(passport.session())
 
   // establish routes
   app.use('/', require('./api'))
@@ -79,18 +55,7 @@ const startListening = () => {
   require('./socket')(io)
 }
 
-const toSyncOrNot = process.env.NODE_ENV !== 'production' ? {force: true} : '';
+sqlDb.sync({force: true})
+.then(createApp);
+seedGraph().then(startListening);
 
-const syncDb = () => sqlDb.sync(toSyncOrNot)
-
-
-// require.main evaluates true when run from command line ('node server/index.js')
-// require.main evaluates false when it is required by another module
-if (require.main === module) {
-  sessionStore.sync()
-  .then(syncDb)
-  .then(createApp);
-  seedGraph().then(startListening);
-} else {
-  createApp()
-}

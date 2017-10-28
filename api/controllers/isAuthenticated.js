@@ -3,7 +3,7 @@ const isAuthenticated = (req, res) =>{
         next();
     }
     else{
-        res.status(401).json({error:"Please login to perform request."});
+        res.status(401).json({message:"Login is required in order to perform request."});
     }  
 }
 

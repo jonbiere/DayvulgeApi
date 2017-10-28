@@ -35,6 +35,10 @@ User.prototype.correctPassword = function (candidatePwd) {
   return User.encryptPassword(candidatePwd, this.salt) === this.password
 };
 
+User.prototype.mapToViewModel = function(){
+  return {id:this.id, name:this.name, email:this.email}
+};
+
 /*
  * classMethods
  */
@@ -50,12 +54,9 @@ User.encryptPassword = function (plainText, salt) {
  * hooks
  */
 const setSaltAndPassword = user => {
-  //only set salt/password for non provider users.
-  if(!user.googleId && !user.facebookId){
-    if (user.changed('password')) {
-      user.salt = User.generateSalt()
-      user.password = User.encryptPassword(user.password, user.salt)
-    }
+  if (user.changed('password')) {
+    user.salt = User.generateSalt()
+    user.password = User.encryptPassword(user.password, user.salt)
   }
 };
 

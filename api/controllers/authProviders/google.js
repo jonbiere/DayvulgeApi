@@ -1,49 +1,47 @@
-const passport = require('passport');
+const axios = require('axios');
+const jwt = require('jsonwebtoken');
 const router = require('express').Router();
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const {User} = require('../../../data/models/postgres');
-module.exports = router;
 
-/**
- * For OAuth keys and other secrets, your Node process will search
- * process.env to find environment variables. On your production server,
- * you will be able to set these environment variables with the appropriate
- * values. In development, a good practice is to keep a separate file with
- * these secrets that you only share with your team - it should NOT be tracked
- * by git! In this case, you may use a file called `secrets.js`, which will
- * set these environment variables like so:
- *
- * process.env.GOOGLE_CLIENT_ID = 'your google client id'
- * process.env.GOOGLE_CLIENT_SECRET = 'your google client secret'
- * process.env.GOOGLE_CALLBACK = '/your/google/callback'
- */
+let verifyGoogleToken = (token) => {
+  let path = `https://www.googleapis.com/plus/v1/people/me?access_token=${token}`;
+    return axios.get(path).then(res =>{
+      let googleData = res.data;
+      return {
+        email: googleData.emails[0] && googleData.emails[0].value,
+        googleId: googleData.id,
+        name: googleData.displayName || '',
+        locale:googleData.language || null,       
+      };
+    });
+}
 
-const googleConfig = {
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: process.env.GOOGLE_CALLBACK
-};
-
-const strategy = new GoogleStrategy(googleConfig, (token, refreshToken, profile, done) => {
-  const googleId = profile.id
-  const name = profile.displayName
-  const email = profile.emails[0].value
-
-  //check if email is already in use. If so allow login from either Google or Password
-  User.findOrCreate({where:{$or:[{googleId: googleId}, {email:email}]}, defaults:{name: name, email: email}})
+let generateToken = (googleUser) => {
+  return User.findOrCreate({ where:{$or:[{googleId: googleUser.googleId }, {email:googleUser.email}]}, 
+    defaults:{name:googleUser.name, email:googleUser.email, googleId: googleUser.googleId}})
   .spread((user, created) => {
-    if(!created){
+    let userVm = user.mapToViewModel(); 
+    let authToken = jwt.sign(userVm, process.env.API_AUTH_SECRET, {
+      expiresIn: '5h' // expires in 5 hours
+    });   
+    return {user:userVm, token: authToken}; 
+  });
+} 
 
-    }
-   done(null, user);
-  }).catch(done)
+router.post('/', (req,res)=>{
+  let {token} = req.body;
+
+  let errorResponse = (err) => {
+    //TODO Log Details with logger
+    console.log(err);
+    res.status(500).json({message: "An error has occured"});
+  };
+
+  verifyGoogleToken(token).then(googleUser => {
+    generateToken(googleUser).then(result => {
+      res.status(200).json(result);
+    }).catch(errorResponse);
+  }).catch(errorResponse);
 });
 
-passport.use(strategy);
-
-router.get('/', passport.authenticate('google', {scope: 'email'}));
-
-router.get('/callback', passport.authenticate('google', {
-  successRedirect: process.env.AUTH_SUCCESS_URL,
-  failureRedirect: process.env.AUTH_FAIL_URL
-}));
+module.exports = router;
